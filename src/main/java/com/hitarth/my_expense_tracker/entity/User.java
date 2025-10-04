@@ -3,37 +3,34 @@ package com.hitarth.my_expense_tracker.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.*;
 
-@Data
-@Entity 
-@Getter 
-@Setter 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Id 
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Column(nullable = false, unique = true)
+    private String userName;
 
-  @Column(nullable = false, unique = true)
-  private String userName;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-  @Column(nullable = false, unique = true)
-  private String email;
+    @Column(nullable = false)
+    private String password;
 
-  @Column(nullable = false)
-  private String password;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-  @CreatedBy
-  private LocalDateTime createdAt;
-
-  @LastModifiedDate
-  private LocalDateTime modifiedAt;
-  
+    @UpdateTimestamp
+    private LocalDateTime modifiedAt;
 }
 

@@ -11,36 +11,32 @@ import com.hitarth.my_expense_tracker.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
-@RequestMapping("/myexpense")
+@RequestMapping("/api/myexpense")
 @RestController 
 @Slf4j
 public class AuthController {
 
   private final AuthService svc;
 
-  public AuthController(AuthService svc) { System.out.println(">>> AuthController initialized");
-this.svc = svc; }
+  public AuthController(AuthService svc) { 
+    System.out.println(">>> AuthController initialized");
+    this.svc = svc; 
+  }
 
   @PostMapping("/signup") @ResponseStatus(HttpStatus.CREATED)
   public AuthResponse register(@Valid @RequestBody SignupRequest in) {
-    log.info("Yo");
-    System.out.println("here");
+    log.info("Inside register");
     return svc.signup(in); 
   }
 
   @PostMapping("/login")
-  public AuthResponse login(@Valid @RequestBody LoginRequest in) { return svc.login(in); }
-//
+  public AuthResponse login(@Valid @RequestBody LoginRequest in) { 
+    return svc.login(in); 
+  }
+
 //  @PostMapping("/changepassword")
 //  public void changePwd(@AuthenticationPrincipal UserDetails user,
 //                        @Valid @RequestBody ChangePasswordRequest req) {
 //    svc.changePassword(user.getUsername(), req);
-  @GetMapping("/ping")
-  public String ping() {
-    System.out.println("Ping called");
-    log.info("pong");
-    return "pong";
-  }
-	
- }
+}
 

@@ -28,7 +28,6 @@ public class AuthService {
 
     public AuthResponse signup(SignupRequest in) {
         log.info("Inside signup");
-        System.out.println("Before saving user");
         if (repo.existsByUserName(in.username()) || repo.existsByEmail(in.email()))
             throw new IllegalArgumentException("Username/email already used");
 
@@ -43,11 +42,13 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest in) {
+        log.info("Inside signup");
         User u = repo.findByUserName(in.username())
             .filter(x -> encoder.matches(in.password(), x.getPassword()))
             .orElseThrow(() -> new IllegalArgumentException("Bad credentials"));
 
         String token = jwt.generateToken(u.getUserName());
+        log.info("token:",token);
         return AuthResponse.bearer(token);
     }
 }

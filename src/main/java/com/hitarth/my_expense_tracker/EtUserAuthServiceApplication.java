@@ -19,10 +19,10 @@ public class EtUserAuthServiceApplication {
 		ConfigurableApplicationContext context = SpringApplication.run(EtUserAuthServiceApplication.class, args);
 
         // DEBUG: Print all loaded bean names
-        System.out.println("==== LOADED BEANS ====");
-        for (String name : context.getBeanDefinitionNames()) {
-            System.out.println(name);
-        }
+        // System.out.println("==== LOADED BEANS ====");
+        // for (String name : context.getBeanDefinitionNames()) {
+        //     System.out.println(name);
+        // }
 	}
 
 }
