@@ -1,6 +1,7 @@
 package com.hitarth.my_expense_tracker.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.hitarth.my_expense_tracker.dto.AuthResponse;
@@ -24,14 +25,17 @@ public class AuthController {
   }
 
   @PostMapping("/signup") @ResponseStatus(HttpStatus.CREATED)
-  public AuthResponse register(@Valid @RequestBody SignupRequest in) {
+  public ResponseEntity<AuthResponse> register(@Valid @RequestBody SignupRequest in) {
     log.info("Inside register");
-    return svc.signup(in); 
+    AuthResponse resp = svc.signup(in);
+    return ResponseEntity.ok(resp); 
   }
 
   @PostMapping("/login")
-  public AuthResponse login(@Valid @RequestBody LoginRequest in) { 
-    return svc.login(in); 
+  public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest in) { 
+    log.info("Inside login");
+    AuthResponse resp = svc.login(in);
+    return ResponseEntity.ok(resp);
   }
 
 //  @PostMapping("/changepassword")

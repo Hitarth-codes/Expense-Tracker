@@ -6,14 +6,14 @@ import jakarta.validation.constraints.Size;
 
 
 public record SignupRequest(
-        @NotBlank
+        @NotBlank(message = "Username is mandatory")
         @Size(min = 3, max = 50)
         String username,
 
-        @NotBlank
+        @NotBlank(message = "Email is mandatory")
         @Email
         String email,
         
-        @NotBlank
+        @NotBlank(message = "Password is mandatory")
         @Size(min = 8, max = 120)
         String password) {}

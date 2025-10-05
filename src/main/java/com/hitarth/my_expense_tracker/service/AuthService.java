@@ -8,6 +8,7 @@ import com.hitarth.my_expense_tracker.dto.AuthResponse;
 import com.hitarth.my_expense_tracker.dto.LoginRequest;
 import com.hitarth.my_expense_tracker.dto.SignupRequest;
 import com.hitarth.my_expense_tracker.entity.User;
+import com.hitarth.my_expense_tracker.handler.UserAlreadyExistsException;
 import com.hitarth.my_expense_tracker.util.JwtUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class AuthService {
     public AuthResponse signup(SignupRequest in) {
         log.info("Inside signup");
         if (repo.existsByUserName(in.username()) || repo.existsByEmail(in.email()))
-            throw new IllegalArgumentException("Username/email already used");
+            throw new UserAlreadyExistsException("Username or email already used");
 
         User u = new User();
         u.setUserName(in.username());
@@ -45,7 +46,7 @@ public class AuthService {
         log.info("Inside signup");
         User u = repo.findByUserName(in.username())
             .filter(x -> encoder.matches(in.password(), x.getPassword()))
-            .orElseThrow(() -> new IllegalArgumentException("Bad credentials"));
+            .orElseThrow(() -> new IllegalArgumentException("Bad credentials: username or password is incorrect"));
 
         String token = jwt.generateToken(u.getUserName());
         log.info("token:",token);

@@ -17,6 +17,10 @@ import com.hitarth.my_expense_tracker.dto.CategoryTotalResponse;
 import com.hitarth.my_expense_tracker.dto.MonthlySummaryResponse;
 import com.hitarth.my_expense_tracker.dto.TotalExpense;
 import com.hitarth.my_expense_tracker.entity.User;
+import com.hitarth.my_expense_tracker.handler.InvalidDateRangeException;
+import com.hitarth.my_expense_tracker.handler.InvalidMonthOrYearException;
+import com.hitarth.my_expense_tracker.handler.NoDataFoundException;
+import com.hitarth.my_expense_tracker.handler.UserNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,13 +39,27 @@ public class AnalyticsService {
     
     public List<TotalExpense> getExpensesByDate(String username, LocalDateTime startDate, LocalDateTime endDate){
         User user = userRepo.findByUserName(username)
-            .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
-        return expenseService.getExpenses(user, startDate, endDate);
+            .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        if(startDate.isAfter(endDate)) {
+            throw new InvalidDateRangeException("Start date cannot be after end date");
+        }
+        List<TotalExpense> expenses = expenseService.getExpenses(user, startDate, endDate);
+        if (expenses.isEmpty()) {
+            throw new NoDataFoundException("No expenses found for the given date range");
+        }
+        return expenses;
     }
 
     public List<CategoryTotalResponse> getCategoryWiseTotals(String username, int month, int year) {
+        if (month < 1 || month > 12) {
+            throw new InvalidMonthOrYearException("Month must be between 1 and 12");
+        }
+        if (year < 1900 || year > LocalDateTime.now().getYear()) {
+            throw new InvalidMonthOrYearException("Year must be valid and not in the future");
+        }
         User user = userRepo.findByUserName(username)
-            .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+            .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
+        
         String monthStr = String.format("%02d", month); // "09"
         String yearStr = String.valueOf(year);
         List<Object[]> results = expenseRepo.getCategoryWiseTotals(user, monthStr, yearStr);
@@ -53,8 +71,14 @@ public class AnalyticsService {
     }
 
     public MonthlySummaryResponse getMonthlySummary(String username, int month, int year){
+        if (month < 1 || month > 12) {
+            throw new InvalidMonthOrYearException("Month must be between 1 and 12");
+        }
+        if (year < 1900 || year > LocalDateTime.now().getYear()) {
+            throw new InvalidMonthOrYearException("Year must be valid and not in the future");
+        }
         User user = userRepo.findByUserName(username)
-            .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+            .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
         String monthStr = String.format("%02d", month);
         String yearStr = String.valueOf(year);
         List<Object[]> results = expenseRepo.getCategoryWiseTotals(user, monthStr, yearStr);

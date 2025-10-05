@@ -8,6 +8,7 @@ import com.hitarth.my_expense_tracker.dto.ExpenseRequest;
 import com.hitarth.my_expense_tracker.dto.ExpenseResponse;
 import com.hitarth.my_expense_tracker.service.ExpenseService;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RequestMapping("/api/Expenses")
@@ -23,7 +24,7 @@ public class ExpenseController {
   }
   
   @PostMapping("/addExpense")
-  private ResponseEntity<ExpenseResponse> addExpense(@RequestBody ExpenseRequest expenseRequest){
+  private ResponseEntity<ExpenseResponse> addExpense(@Valid @RequestBody ExpenseRequest expenseRequest){
     log.info("Inside addExpense");
     String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return ResponseEntity.ok(expenseService.addExpense(expenseRequest, username));

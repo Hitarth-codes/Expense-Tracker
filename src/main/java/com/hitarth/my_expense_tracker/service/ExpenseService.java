@@ -1,5 +1,6 @@
 package com.hitarth.my_expense_tracker.service;
 
+import java.rmi.server.ExportException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,9 +11,9 @@ import com.hitarth.my_expense_tracker.dto.ExpenseResponse;
 import com.hitarth.my_expense_tracker.dto.TotalExpense;
 import com.hitarth.my_expense_tracker.entity.Expense;
 import com.hitarth.my_expense_tracker.entity.User;
+import com.hitarth.my_expense_tracker.handler.ExpenseNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class ExpenseService {
     }
 
     public ExpenseResponse updateExpense(Long id, String username, ExpenseRequest expenseRequest) {
-        Expense expense = expenseRepo.findById(id).orElseThrow(() -> new RuntimeException("Expense Not Found"));
+        Expense expense = expenseRepo.findById(id).orElseThrow(() -> new ExpenseNotFoundException("Expense Not Found"));
         if (!expense.getUser().getUserName().equals(username)) throw new AccessDeniedException("Unauthorized");
 
         if (expenseRequest.amount() != null) expense.setAmount(expenseRequest.amount());
@@ -44,7 +45,7 @@ public class ExpenseService {
     }
 
     public void deleteExpense(Long id, String username) {
-        Expense expense = expenseRepo.findById(id).orElseThrow(() -> new RuntimeException("Expense Not Found"));
+        Expense expense = expenseRepo.findById(id).orElseThrow(() -> new ExpenseNotFoundException("Expense Not Found"));
         if (!expense.getUser().getUserName().equals(username)) throw new AccessDeniedException("Unauthorized");
         expenseRepo.delete(expense);
     }

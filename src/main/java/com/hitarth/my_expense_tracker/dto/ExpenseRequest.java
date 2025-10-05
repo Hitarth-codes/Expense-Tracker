@@ -2,10 +2,12 @@ package com.hitarth.my_expense_tracker.dto;
 
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record ExpenseRequest(
-    String category,
-    String note,
-    Double amount,
+    @NotBlank(message = "Category is mandatory") String category,
+    @NotBlank(message = "Note is mandatory")String note,
+    @NotBlank(message = "Amount is mandatory") Double amount,
     LocalDateTime expenseDate,
-    String item
+    @NotBlank(message = "Item is mandatory") String item
 ) {}
